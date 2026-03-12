@@ -13,6 +13,9 @@ class Triangulo:
 
         if b not in self.adj:
             self.adj[b] = []
+        
+        if b not in self.adj[a]:
+            self.adj[a].append(b)
 
-        self.adj[a].append(b)
-        self.adj[b].append(a)
+        if a not in self.adj[b]:
+            self.adj[b].append(a)
