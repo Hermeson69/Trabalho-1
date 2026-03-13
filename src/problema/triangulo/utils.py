@@ -15,6 +15,7 @@ class Utils:
         return False
     
 
+    @staticmethod
     def verifica_linhas(a1, b1, a2, b2):
         o1 = Utils.orientacao(a1, b1, a2)
         o2 = Utils.orientacao(a1, b1, b2)
@@ -35,4 +36,16 @@ class Utils:
             return True
         if (o4 == 0 and Utils.no_segmento(a2, b1, b2)):
             return True
+        return False
+    
+    @staticmethod
+    def testar_colisao(triangulo1, triangulo2):
+        """Testa se dois triângulos colidem verificando interseção de arestas."""
+        arestas_t1 = triangulo1.get_arestas()
+        arestas_t2 = triangulo2.get_arestas()
+
+        for aresta1 in arestas_t1:
+            for aresta2 in arestas_t2:
+                if Utils.verifica_linhas(aresta1[0], aresta1[1], aresta2[0], aresta2[1]):
+                    return True
         return False

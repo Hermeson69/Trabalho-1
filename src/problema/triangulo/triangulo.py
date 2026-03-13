@@ -1,3 +1,9 @@
+import math as m
+
+import random as rn
+
+from problema.triangulo.utils import Utils
+
 class Triangulo:
 
     def __init__(self):
@@ -19,3 +25,64 @@ class Triangulo:
 
         if a not in self.adj[b]:
             self.adj[b].append(a)
+    
+    def get_arestas(self):
+        """Retorna as arestas do triângulo."""
+        arestas = []
+        visited = set()
+        
+        for point_a in self.adj:
+            for point_b in self.adj[point_a]:
+                aresta = tuple(sorted((point_a, point_b)))
+                if aresta not in visited:
+                    visited.add(aresta)
+                    arestas.append(aresta)
+        
+        return arestas
+
+    @staticmethod
+    def gerar_triangulo(x,y, side):
+        """
+        Gerar um triângulo equilátero com um vértice em (x, y) e lados de comprimento 'side'.
+        """
+        # Cálculo dos vértices do triângulo
+        height = (m.sqrt(3) / 2) * side
+        v1 = (x, y)
+        v2 = (x + side, y)
+        v3 = (x + side / 2, y + height)
+
+        # Adicionar os vértices ao grafo
+        triangulo = Triangulo()
+        triangulo.vertice(v1, v2)
+        triangulo.vertice(v2, v3)
+        triangulo.vertice(v3, v1)
+
+        return triangulo
+
+
+    """
+    Gerar n triângulos aleatórios dentro de uma área definida por (0, 0) a (goal_x, goal_y), garantindo que eles não colidam entre si.
+    Cada triângulo é gerado com um vértice em uma posição aleatória e lados de comprimento 'side'.
+    """
+    @staticmethod
+    def gerar_obstaculos(goal_x, goal_y, n, side):
+               
+        obstaculos = []
+
+        for _ in range(n):
+            while True:
+                x = rn.uniform(0, goal_x)
+                y = rn.uniform(0, goal_y)
+                triangulo = Triangulo.gerar_triangulo(x, y, side)
+
+                valid = True
+                for obs in obstaculos:
+                    if Utils.testar_colisao(triangulo, obs):
+                        valid = False
+                        break
+                if valid:
+                    obstaculos.append(triangulo)
+                    break
+        
+        return obstaculos
+     
