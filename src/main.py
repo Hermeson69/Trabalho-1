@@ -26,11 +26,11 @@ def ler_entrada_float(prompt):
         try:
             valor = float(input(prompt))
             if valor <= 0:
-                print("❌ Valor deve ser positivo!")
+                print("Valor deve ser positivo!")
                 continue
             return valor
         except ValueError:
-            print("❌ Digite um número válido!")
+            print("Digite um número válido!")
 
 
 def ler_entrada_int(prompt):
@@ -39,11 +39,11 @@ def ler_entrada_int(prompt):
         try:
             valor = int(input(prompt))
             if valor <= 0:
-                print("❌ Valor deve ser positivo!")
+                print("Valor deve ser positivo!")
                 continue
             return valor
         except ValueError:
-            print("❌ Digite um número inteiro válido!")
+            print("Digite um número inteiro válido!")
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
     print("=" * 70)
     
     # Leitura de parâmetros do usuário
-    print("\n📍 Digite os parâmetros do mapa:\n")
+    print("\n Digite os parâmetros do mapa:\n")
     
     goal_x = ler_entrada_float("Coordenada X do objetivo: ")
     goal_y = ler_entrada_float("Coordenada Y do objetivo: ")
@@ -76,7 +76,7 @@ def main():
     
     try:
         obstaculos = Triangulo.gerar_obstaculos(goal_x, goal_y, n_obstaculos, tamanho_triangulo)
-        print(f"✅ {len(obstaculos)} obstáculos gerados com sucesso!")
+        print(f" {len(obstaculos)} obstáculos gerados com sucesso!")
         
         # Mostrar coordenadas dos obstáculos
         print("\nCoordenadas dos obstáculos:")
@@ -85,11 +85,11 @@ def main():
             print(f"  Triângulo {i+1}: {linhas}")
         
         # Plotar mapa
-        print("\n📊 Gerando visualização...")
+        print("\n Gerando visualização...")
         plotar_mapa(goal_x, goal_y, obstaculos)
         
     except Exception as e:
-        print(f"❌ Erro ao gerar obstáculos: {e}")
+        print(f" Erro ao gerar obstáculos: {e}")
         return
     
     # Teste 2: Verificar colisões entre obstáculos
@@ -102,14 +102,14 @@ def main():
         for j in range(i+1, len(obstaculos)):
             total_colisoes_testadas += 1
             if testar_colisao(obstaculos[i], obstaculos[j]):
-                print(f"⚠️  Colisão detectada entre triângulo {i+1} e {j+1}")
+                print(f"  Colisão detectada entre triângulo {i+1} e {j+1}")
                 colisoes_encontradas += 1
                 total_colisoes_encontradas += 1
     
     if colisoes_encontradas == 0:
-        print("✅ Nenhuma colisão entre obstáculos!")
+        print(" Nenhuma colisão entre obstáculos!")
     else:
-        print(f"❌ {colisoes_encontradas} colisão(ões) detectada(s)")
+        print(f" {colisoes_encontradas} colisão(ões) detectada(s)")
     
     # Teste 3: Teste de colisão com triângulo manual
     print("\n" + "=" * 70)
@@ -119,7 +119,7 @@ def main():
     
     # Resumo final com estatísticas
     print("\n" + "=" * 70)
-    print("📊 ESTATÍSTICAS FINAIS")
+    print(" ESTATÍSTICAS FINAIS")
     print("=" * 70)
     
     if total_colisoes_testadas > 0:
@@ -133,7 +133,7 @@ def main():
         print(f"\n  Nenhum teste de colisão realizado")
     
     print("\n" + "=" * 70)
-    print("TESTE FINALIZADO ✨")
+    print("TESTE FINALIZADO")
     print("=" * 70)
 
 

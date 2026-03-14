@@ -67,13 +67,6 @@ class Triangulo:
     @staticmethod
     def gerar_obstaculos(goal_x, goal_y, n, side):
         
-        def triangulo_dentro_limites(triangulo, goal_x, goal_y):
-            """Verifica se todos os vértices do triângulo estão dentro dos limites."""
-            for vertex in triangulo.adj.keys():
-                if vertex[0] < 0 or vertex[0] > goal_x or vertex[1] < 0 or vertex[1] > goal_y:
-                    return False
-            return True
-        
         obstaculos = []
         max_tentativas = 1000  # Limite de tentativas para evitar loop infinito
 
@@ -86,8 +79,7 @@ class Triangulo:
                 y = rn.uniform(0, goal_y - side)
                 triangulo = Triangulo.gerar_triangulo(x, y, side)
 
-                if not triangulo_dentro_limites(triangulo, goal_x, goal_y):
-                    continue
+
                 
                 # Testar colisão
                 valid = True
@@ -101,7 +93,7 @@ class Triangulo:
                     break
             
             if tentativas >= max_tentativas:
-                print(f"⚠️  Aviso: Só foi possível gerar {len(obstaculos)} de {n} obstáculos sem colisão.")
+                print(f"Aviso: Só foi possível gerar {len(obstaculos)} de {n} obstáculos sem colisão.")
                 break
         
         return obstaculos
