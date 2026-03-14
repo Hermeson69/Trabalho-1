@@ -1,5 +1,6 @@
 from problema.triangulo.utils import Utils
 from problema.triangulo.triangulo import Triangulo
+from problema.visualizacao.plot import plotar_mapa
 
 def pegar_linhas(triangulo):
     """Le o dicionário do grafo e devolve uma lista de linhas sem repetição."""
@@ -82,6 +83,10 @@ def main():
         for i, obs in enumerate(obstaculos):
             linhas = pegar_linhas(obs)
             print(f"  Triângulo {i+1}: {linhas}")
+        
+        # Plotar mapa
+        print("\n📊 Gerando visualização...")
+        plotar_mapa(goal_x, goal_y, obstaculos)
         
     except Exception as e:
         print(f"❌ Erro ao gerar obstáculos: {e}")
