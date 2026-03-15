@@ -49,20 +49,7 @@ Gera arquivo `mapa_obstaculos.png`:
 - Ponto verde = início (0, 0)
 - Estrela vermelha = objetivo (goal_x, goal_y)
 
-## 🔧 Personalizar
 
-**Tentativas por triângulo (linha 84):**
-
-```python
-max_tentativas_por_obstaculo = 5000  # Padrão: goal_x × 2
-```
-
-## 🐛 Problemas & Soluções
-
-| Problema            | Solução                          |
-| ------------------- | -------------------------------- |
-| Demora muito        | Reduzir quantidade ou tamanho    |
-| Triângulos se tocam | Verificar `Utils.testar_colisao` |
 
 ## 🎓 Conceitos
 
