@@ -11,6 +11,9 @@ class Triangulo:
         Lista de adjacências para representar o grafo do triângulo. Cada vértice é uma chave no dicionário, e o valor é uma lista de vértices adjacentes.
         """
         self.adj = {}
+        self.cx = None  # Centro X (pré-calculado)
+        self.cy = None  # Centro Y (pré-calculado)
+        self.raio = None  # Raio do círculo envolvente (pré-calculado)
 
     def vertice(self,a,b):
 
@@ -41,6 +44,11 @@ class Triangulo:
         return arestas
 
     @staticmethod
+    def calcular_raio_envolvente(side):
+        """Calcula raio do círculo que envolve um triângulo equilátero."""
+        return side / m.sqrt(3)
+
+    @staticmethod
     def gerar_triangulo(x,y, side):
         """
         Gerar um triângulo equilátero com um vértice em (x, y) e lados de comprimento 'side'.
@@ -56,6 +64,10 @@ class Triangulo:
         triangulo.vertice(v1, v2)
         triangulo.vertice(v2, v3)
         triangulo.vertice(v3, v1)
+        
+        triangulo.cx = (v1[0] + v2[0] + v3[0]) / 3
+        triangulo.cy = (v1[1] + v2[1] + v3[1]) / 3
+        triangulo.raio = Triangulo.calcular_raio_envolvente(side)
 
         return triangulo
 
@@ -68,33 +80,48 @@ class Triangulo:
     def gerar_obstaculos(goal_x, goal_y, n, side):
         
         obstaculos = []
-        max_tentativas = 1000  # Limite de tentativas para evitar loop infinito
-
-        for _ in range(n):
-            tentativas = 0
-            while tentativas < max_tentativas:
-                tentativas += 1
+        quant_colisoes = 0
+        
+        # Limite baseado nas dimensões do mapa
+        max_tentativas_por_obstaculo = int(goal_x * 2)
+        
+        for i in range(n):
+            tentativas_locais = 0
+            
+            while tentativas_locais < max_tentativas_por_obstaculo:
+                tentativas_locais += 1
                 
                 x = rn.uniform(0, goal_x - side)
                 y = rn.uniform(0, goal_y - side)
                 triangulo = Triangulo.gerar_triangulo(x, y, side)
-
-
                 
-                # Testar colisão
+                # PRÉ-FILTRO DE COLISÃO: Teste de círculos envolventes apenas
                 valid = True
                 for obs in obstaculos:
+                    # Distância entre centros
+                    dist_centros_quad = (triangulo.cx - obs.cx) ** 2 + (triangulo.cy - obs.cy) ** 2
+                    soma_raios_quad = (triangulo.raio + obs.raio) ** 2
+                    
+                    # Se círculos NÃO colidem, triângulos também não colidem
+                    if dist_centros_quad >= soma_raios_quad:
+                        continue
+                    
+                    # Só faz teste de colisão completo se círculos colidem
                     if Utils.testar_colisao(triangulo, obs):
                         valid = False
+                        quant_colisoes += 1
                         break
                 
                 if valid:
                     obstaculos.append(triangulo)
                     break
             
-            if tentativas >= max_tentativas:
+            if tentativas_locais >= max_tentativas_por_obstaculo:
                 print(f"Aviso: Só foi possível gerar {len(obstaculos)} de {n} obstáculos sem colisão.")
                 break
+        
+        print(f"Colisões detectadas: {quant_colisoes}")
+        print(f"Obstáculos inseridos: {len(obstaculos)}")
         
         return obstaculos
      
