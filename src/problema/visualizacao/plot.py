@@ -41,8 +41,8 @@ def plotar_mapa(largura, altura, obstaculos):
             ax.fill(xs, ys, "blue", edgecolor="black", linewidth=0.5)
     
     # Plot do inicio e do objetivo
-    ax.plot(0,altura, marker='o', color='green', markersize=12, label=f'Início (0,{altura})')
-    ax.plot(largura, 0, marker='x', color='red', markersize=12, label=f'Objetivo ({largura}, 0)')
+    ax.plot(0, 0, marker='o', color='green', markersize=12, label='Início (0,0)')
+    ax.plot(largura, altura, marker='x', color='red', markersize=12, label=f'Objetivo ({largura}, {altura})')
 
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
