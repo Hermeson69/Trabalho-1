@@ -101,7 +101,7 @@ def main():
     for i in range(len(obstaculos)):
         for j in range(i+1, len(obstaculos)):
             total_colisoes_testadas += 1
-            if testar_colisao(obstaculos[i], obstaculos[j]):
+            if testar_colisao(obstaculos[i], obstaculos[j]) == False:
                 print(f"  Colisão detectada entre triângulo {i+1} e {j+1}")
                 colisoes_encontradas += 1
                 total_colisoes_encontradas += 1
