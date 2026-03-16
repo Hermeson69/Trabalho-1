@@ -59,4 +59,4 @@ Gera arquivo `mapa_obstaculos.png`:
 
 ---
 
-**Autor:** Hermeson Alves, Elder M. | **Instituição:** Federal/SI | **Março 2026**
+**Autor:** Hermeson Alves, Elder Matheus | **Instituição:** Federal/SI | **Março 2026**
