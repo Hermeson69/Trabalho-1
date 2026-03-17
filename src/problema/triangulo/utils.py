@@ -7,7 +7,7 @@ class Utils:
         negativo se estão em sentido horário e 
         zero se são colineares."""
         return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
-    
+    '''
     @staticmethod
     def no_segmento(p, q, r):
         """Função para verificar se q está sobre o segmento p-r"""
@@ -16,6 +16,7 @@ class Utils:
             min(p[1], r[1]) <= q[1] <= max(p[1], r[1])):
             return True
         return False
+    '''
     
     @staticmethod
     def ponto_dentro_triangulo(ponto, tri_vertices):
