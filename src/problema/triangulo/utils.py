@@ -2,12 +2,15 @@ class Utils:
 
     @staticmethod
     def orientacao(a, b, c):
-        """Função para calcular a orientação de três pontos (a, b, c). Retorna um valor positivo se os pontos estão em sentido anti-horário, negativo se estão em sentido horário e zero se são colineares."""
+        """Função para calcular a orientação de três pontos (a, b, c). 
+        Retorna um valor positivo se os pontos estão em sentido anti-horário, 
+        negativo se estão em sentido horário e 
+        zero se são colineares."""
         return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
     
     @staticmethod
     def no_segmento(p, q, r):
-        """Função para verificar se q está sobre o segmento p-retafim"""
+        """Função para verificar se q está sobre o segmento p-r"""
 
         if (min(p[0], r[0]) <= q[0] <= max(p[0], r[0]) and
             min(p[1], r[1]) <= q[1] <= max(p[1], r[1])):

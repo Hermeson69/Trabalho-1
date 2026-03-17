@@ -7,9 +7,9 @@ def pegar_linhas(triangulo):
     lines = []
     visited = set()
 
-    for point_a in triangulo.adj:
-        for point_b in triangulo.adj[point_a]:
-            line = tuple(sorted((point_a, point_b)))
+    for ponto_a in triangulo.adj:
+        for ponto_b in triangulo.adj[ponto_a]:
+            line = tuple(sorted((ponto_a, ponto_b)))
             if line not in visited:
                 visited.add(line)
                 lines.append(line)
@@ -101,7 +101,7 @@ def main():
     for i in range(len(obstaculos)):
         for j in range(i+1, len(obstaculos)):
             total_colisoes_testadas += 1
-            if testar_colisao(obstaculos[i], obstaculos[j]) == False:
+            if testar_colisao(obstaculos[i], obstaculos[j]):
                 colisoes_encontradas += 1
                 total_colisoes_encontradas += 1
     

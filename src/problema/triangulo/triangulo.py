@@ -34,9 +34,9 @@ class Triangulo:
         arestas = []
         visited = set()
         
-        for point_a in self.adj:
-            for point_b in self.adj[point_a]:
-                aresta = tuple(sorted((point_a, point_b)))
+        for ponto_a in self.adj:
+            for ponto_b in self.adj[ponto_a]:
+                aresta = tuple(sorted((ponto_a, ponto_b)))
                 if aresta not in visited:
                     visited.add(aresta)
                     arestas.append(aresta)
