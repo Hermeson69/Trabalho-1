@@ -1,62 +1,50 @@
-# Sistema de Planejamento - Geração de Obstáculos com Detecção de Colisão
+# Geração de Obstáculos (Triângulos 2D)
 
-## 🚀 Como Executar
+Gerador de triângulos equiláteros aleatórios não-sobrepostos com visualização. Usa pré-filtro por círculos envolventes + teste ponto-em-triângulo para detecção eficiente de colisões.
+
+## Como executar
 
 ```bash
-# Instalar dependências
 pip install matplotlib
-
-# Executar
 python src/main.py
-# ou
-uv run src/main.py
 ```
 
 **Entrada interativa:**
 
-```
-Coordenada X do objetivo: 1000
-Coordenada Y do objetivo: 500
-Quantidade de triângulos: 3500
-Tamanho dos lados: 10
-```
+- Dimensão X / Y do mapa
+- Quantidade de triângulos
+- Tamanho do lado
 
+Gera arquivo `mapa_obstaculos.png`.
 
-### Teste de Colisão Real
+## Algoritmo
 
-Apenas executado se os círculos chegam a colidir. 
+1. **Posicionamento aleatório:** vértice inferior esquerdo em posição uniforme [0, goal_x-side] × [0, goal_y-side]
+2. **Pré-filtro:** círculos envolventes (raio = side/√3) para rejeição rápida
+3. **Teste exato:** Semi-planos ou orientação para confirmar interseção
+4. **Rejeição:** limite de tentativas por obstáculo
 
-
-
-## 📁 Estrutura
+## Estrutura
 
 ```
 src/
-├── main.py (entrada interativa)
+├── main.py                 # Entrada e orquestração
 └── problema/
     ├── triangulo/
-    │   ├── triangulo.py (Classe + gerar_obstaculos)
-    │   └── utils.py (Testes de colisão geométrica)
+    │   ├── triangulo.py    # Classe Triangulo + gerar_obstaculos
+    │   └── utils.py        # Testes de colisão geométrica
     └── visualizacao/
-        └── plot.py (matplotlib)
+        └── plot.py         # Renderização matplotlib
 ```
 
-## 🎨 Saída
+## Parâmetros
 
-Gera arquivo `mapa_obstaculos.png`:
+- `goal_x, goal_y`: dimensões da área
+- `n`: número de triângulos
+- `side`: comprimento do lado
 
-- Triângulos azuis = obstáculos
-- Ponto verde = início (0, 0)
-- Estrela vermelha = objetivo (goal_x, goal_y)
-
-
-
-## 🎓 Conceitos
-
-- **Geometria:** Orientação 2D, ponto-em-triângulo, intersecção de segmentos
-- **Otimização:** Pré-filtro de círculos envolventes (70-80% mais rápido)
-- **Empacotamento:** Circle packing com rejeição aleatória
+**Nota:** em regiões muito preenchidas, aumentar `max_tentativas_por_obstaculo` em `triangulo.py` pode melhorar taxa de sucesso.
 
 ---
 
-**Autor:** Hermeson Alves, Elder Matheus | **Instituição:** Federal/SI | **Março 2026**
+**Autores:** Hermeson Alves, Elder Matheus | Federal/SI (Março 2026)
