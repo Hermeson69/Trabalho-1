@@ -1,5 +1,5 @@
 from problema.triangulo.utils import Utils
-from problema.triangulo.triangulo import Triangulo
+from problema.triangulo.triangulo import Triangulo, PlanejadorCaminhos
 from problema.visualizacao.plot import plotar_mapa
 
 def pegar_linhas(triangulo):
@@ -84,9 +84,19 @@ def main():
             linhas = pegar_linhas(obs)
             print(f"  Triângulo {i+1}: {linhas}")
         
-        # Plotar mapa
+        # Construir grafo de visibilidade
+        print("\n" + "=" * 70)
+        print("[GRAFO DE VISIBILIDADE]")
+        print("=" * 70)
+        
+        planejador = PlanejadorCaminhos(goal_x, goal_y, obstaculos)
+        grafo, inicio, fim = planejador.construir_grafo_visibilidade(incluir_inicial_final=True)
+        
+        print(f" Grafo construído com {len(grafo)} vértices")
+        print(f" Arestas de visibilidade: {sum(len(v) for v in grafo.values()) // 2}")
+        
         print("\n Gerando visualização...")
-        plotar_mapa(goal_x, goal_y, obstaculos)
+        plotar_mapa(goal_x, goal_y, obstaculos, grafo=grafo, inicio=inicio, fim=fim)
         
     except Exception as e:
         print(f" Erro ao gerar obstáculos: {e}")

@@ -73,6 +73,10 @@ class Triangulo:
     def get_vertices(self):
         """Retorna os 3 vértices do triângulo."""
         return list(self.adj.keys())
+    
+    def vertices(self):
+        """Alias para get_vertices()."""
+        return self.get_vertices()
 
     @staticmethod
     def gerar_triangulo(x,y, side):
@@ -157,6 +161,7 @@ class Triangulo:
             if tentativas_locais >= max_tentativas_por_obstaculo:
                 print(f"Aviso: Não foi possível gerar triângulo {i+1}/{n}.")
                 break
+
         
         print(f"\n{'='*60}")
         print(f"ESTATÍSTICAS DA GERAÇÃO")
@@ -170,4 +175,72 @@ class Triangulo:
         print(f"{'='*60}\n")
         
         return obstaculos
-     
+
+
+class PlanejadorCaminhos:
+    """Classe para planejamento de caminhos usando grafo de visibilidade."""
+    
+    def __init__(self, largura, altura, obstaculos):
+        """Inicializa o planejador de caminhos."""
+        self.largura = largura
+        self.altura = altura
+        self.obstaculos = obstaculos
+    
+    def visivel(self, p1, p2):
+        """Verifica se existe linha visível entre p1 e p2."""
+        for tri in self.obstaculos:
+            verts = tri.vertices()
+            arestas = [(verts[0], verts[1]), (verts[1], verts[2]), (verts[2], verts[0])]
+            
+            # Testa interseção com cada aresta do obstáculo
+            for v1, v2 in arestas:
+                if Utils.verifica_linhas(p1, p2, v1, v2):
+                    return False
+            
+            # Testa se o ponto médio do segmento está dentro do triângulo
+            mx = (p1[0] + p2[0]) / 2.0
+            my = (p1[1] + p2[1]) / 2.0
+            if Utils.ponto_dentro_triangulo((mx, my), verts):
+                return False
+        
+        return True
+    
+    def construir_grafo_visibilidade(self, incluir_inicial_final=True):
+        """Constrói o grafo de visibilidade entre vértices."""
+        vertices = []
+        
+        # Coleta todos os vértices dos obstáculos
+        for tri in self.obstaculos:
+            vertices.extend(tri.vertices())
+        
+        # Adiciona início e fim se solicitado
+        inicio = (0.0, 0.0)
+        fim = (float(self.largura), float(self.altura))
+        
+        if incluir_inicial_final:
+            vertices.append(inicio)
+            vertices.append(fim)
+        else:
+            inicio = fim = None
+        
+        # Remove duplicados
+        uniq = []
+        seen = set()
+        for v in vertices:
+            if v not in seen:
+                seen.add(v)
+                uniq.append(v)
+        
+        # Constrói o grafo
+        grafo = {v: [] for v in uniq}
+        
+        for i in range(len(uniq)):
+            for j in range(i + 1, len(uniq)):
+                p1, p2 = uniq[i], uniq[j]
+                if self.visivel(p1, p2):
+                    dist = m.hypot(p1[0] - p2[0], p1[1] - p2[1])
+                    grafo[p1].append((p2, dist))
+                    grafo[p2].append((p1, dist))
+        
+        return grafo, inicio, fim
+
