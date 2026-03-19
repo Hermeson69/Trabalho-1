@@ -157,7 +157,7 @@ class Triangulo:
             if tentativas_locais >= max_tentativas_por_obstaculo:
                 print(f"Aviso: Não foi possível gerar triângulo {i+1}/{n}.")
                 break
-        
+
         print(f"\n{'='*60}")
         print(f"ESTATÍSTICAS DA GERAÇÃO")
         print(f"{'='*60}")

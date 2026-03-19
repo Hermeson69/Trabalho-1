@@ -1,6 +1,19 @@
 from problema.triangulo.utils import Utils
 from problema.triangulo.triangulo import Triangulo
 from problema.visualizacao.plot import plotar_mapa
+import math
+
+def defini_caminho(grafo, vizinhos, caminho, inicio, fim):
+    "Funcao para mostrar todas as arestas de todos os triangulos, com busca em profundidade (tem que passar por todos os caminhos possiveis)"
+    for vizinho in vizinhos:
+        if vizinho not in caminho:
+            caminho.append(vizinho)
+            if vizinho == fim:
+                return True
+            if defini_caminho(grafo, grafo.get(vizinho, []), caminho, inicio, fim):
+                return True
+            caminho.pop()
+    return False
 
 def pegar_linhas(triangulo):
     """Le o dicionário do grafo e devolve uma lista de linhas sem repetição."""
@@ -78,6 +91,40 @@ def main():
         obstaculos = Triangulo.gerar_obstaculos(goal_x, goal_y, n_obstaculos, tamanho_triangulo)
         print(f" {len(obstaculos)} obstáculos gerados com sucesso!")
         
+        # Coletar todos os vértices
+        vertices = set()
+        for obs in obstaculos:
+            vertices.update(obs.get_vertices())
+        vertices.add((0.0, 0.0))
+        vertices.add((goal_x, goal_y))
+        
+        # Construir grafo de visibilidade entre vértices
+        grafo = {v: [] for v in vertices}
+        for v1 in vertices:
+            for v2 in vertices:
+                if v1 != v2:
+                    visible = True
+                    for obs in obstaculos:
+                        for aresta in obs.get_arestas():
+                            if Utils.verifica_linhas(v1, v2, aresta[0], aresta[1]):
+                                visible = False
+                                break
+                        if not visible:
+                            break
+                    if visible:
+                        grafo[v1].append(v2)
+        
+        # Encontrar caminho entre (0,0) e (goal_x, goal_y)
+        caminho = None
+        inicio = (0.0, 0.0)
+        fim = (goal_x, goal_y)
+        caminho_temp = [inicio]
+        if defini_caminho(grafo, grafo.get(inicio, []), caminho_temp, inicio, fim):
+            caminho = caminho_temp
+            print(f"Caminho encontrado: {caminho}")
+        else:
+            print("Nenhum caminho encontrado.")
+        
         # Mostrar coordenadas dos obstáculos
         print("\nCoordenadas dos obstáculos:")
         for i, obs in enumerate(obstaculos):
@@ -86,7 +133,7 @@ def main():
         
         # Plotar mapa
         print("\n Gerando visualização...")
-        plotar_mapa(goal_x, goal_y, obstaculos)
+        plotar_mapa(goal_x, goal_y, obstaculos, grafo, caminho)
         
     except Exception as e:
         print(f" Erro ao gerar obstáculos: {e}")
