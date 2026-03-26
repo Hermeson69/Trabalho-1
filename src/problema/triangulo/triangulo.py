@@ -109,22 +109,10 @@ class Triangulo:
     """
     @staticmethod
     def gerar_obstaculos(goal_x, goal_y, n, side):
-        
         obstaculos = []
-        quant_colisoes = 0
-        quant_rejeitados = 0
-        quant_tentativas = 0
-        
-        # Limite baseado nas dimensões do mapa
-        max_tentativas_por_obstaculo = int(goal_x * 2)
-        
-        for i in range(n):
-            tentativas_locais = 0
-            
-            while tentativas_locais < max_tentativas_por_obstaculo:
-                tentativas_locais += 1
-                quant_tentativas += 1
-                
+
+        for _ in range(n):
+            while True:
                 x = rn.uniform(0, goal_x - side)
                 y = rn.uniform(0, goal_y - side)
                 triangulo = Triangulo.gerar_triangulo(x, y, side)
@@ -136,8 +124,6 @@ class Triangulo:
                     for vx, vy in triangulo.get_vertices():
                         if Triangulo.ponto_no_triangulo(vx, vy, obs.x, obs.y, obs.side):
                             valid = False
-                            quant_colisoes += 1
-                            quant_rejeitados += 1
                             break
                     
                     if not valid:
@@ -147,8 +133,6 @@ class Triangulo:
                     for vx, vy in obs.get_vertices():
                         if Triangulo.ponto_no_triangulo(vx, vy, triangulo.x, triangulo.y, triangulo.side):
                             valid = False
-                            quant_colisoes += 1
-                            quant_rejeitados += 1
                             break
                     
                     if not valid:
@@ -157,22 +141,6 @@ class Triangulo:
                 if valid:
                     obstaculos.append(triangulo)
                     break
-            
-            if tentativas_locais >= max_tentativas_por_obstaculo:
-                print(f"Aviso: Não foi possível gerar triângulo {i+1}/{n}.")
-                break
-
-        
-        print(f"\n{'='*60}")
-        print(f"ESTATÍSTICAS DA GERAÇÃO")
-        print(f"{'='*60}")
-        print(f"Triângulos solicitados: {n}")
-        print(f"Triângulos inseridos: {len(obstaculos)}")
-        print(f"Triângulos rejeitados: {quant_rejeitados}")
-        print(f"Total de tentativas: {quant_tentativas}")
-        print(f"Colisões detectadas: {quant_colisoes}")
-        print(f"Taxa de sucesso: {(len(obstaculos)/n*100):.1f}%")
-        print(f"{'='*60}\n")
         
         return obstaculos
 
@@ -208,10 +176,18 @@ class PlanejadorCaminhos:
     def construir_grafo_visibilidade(self, incluir_inicial_final=True):
         """Constrói o grafo de visibilidade entre vértices."""
         vertices = []
+        arestas_mesmo_triangulo = set()
         
         # Coleta todos os vértices dos obstáculos
         for tri in self.obstaculos:
-            vertices.extend(tri.vertices())
+            verts = tri.vertices()
+            vertices.extend(verts)
+
+            # Marca as 3 arestas do próprio triângulo para não serem usadas no caminho
+            if len(verts) >= 3:
+                arestas_mesmo_triangulo.add(tuple(sorted((verts[0], verts[1]))))
+                arestas_mesmo_triangulo.add(tuple(sorted((verts[1], verts[2]))))
+                arestas_mesmo_triangulo.add(tuple(sorted((verts[2], verts[0]))))
         
         # Adiciona início e fim se solicitado
         inicio = (0.0, 0.0)
@@ -237,10 +213,61 @@ class PlanejadorCaminhos:
         for i in range(len(uniq)):
             for j in range(i + 1, len(uniq)):
                 p1, p2 = uniq[i], uniq[j]
+
+                if tuple(sorted((p1, p2))) in arestas_mesmo_triangulo:
+                    continue
+
                 if self.visivel(p1, p2):
                     dist = m.hypot(p1[0] - p2[0], p1[1] - p2[1])
                     grafo[p1].append((p2, dist))
                     grafo[p2].append((p1, dist))
         
         return grafo, inicio, fim
+
+    def buscar_caminho_qualquer(self, grafo, inicio, fim):
+        """Retorna qualquer caminho entre inicio e fim usando DFS (não ótimo)."""
+        if inicio not in grafo or fim not in grafo:
+            return None
+
+        visitados = set()
+        pilha = [(inicio, [inicio])]
+
+        while pilha:
+            atual, caminho = pilha.pop()
+
+            if atual == fim:
+                return caminho
+
+            if atual in visitados:
+                continue
+            visitados.add(atual)
+
+            for vizinho, _ in grafo[atual]:
+                if vizinho not in visitados:
+                    pilha.append((vizinho, caminho + [vizinho]))
+
+        return None
+    
+    # def busca_a_estrela(self, grafo, inicio, fim):
+    #     """Busca A* para encontrar caminho ótimo entre inicio e fim."""
+    #     if inicio not in grafo or fim not in grafo:
+    #         return None
+    #     open_set = [(0, inicio, [inicio])]
+    #     g_costs = {inicio: 0}
+
+    #     while open_set:
+    #         _, atual, caminho = open_set.pop(0)
+
+    #         if atual == fim:
+    #             return caminho
+
+    #         for vizinho, dist in grafo[atual]:
+    #             tentative_g_cost = g_costs[atual] + dist
+    #             if vizinho not in g_costs or tentative_g_cost < g_costs[vizinho]:
+    #                 g_costs[vizinho] = tentative_g_cost
+    #                 f_cost = tentative_g_cost + m.hypot(vizinho[0] - fim[0], vizinho[1] - fim[1])
+    #                 open_set.append((f_cost, vizinho, caminho + [vizinho]))
+    #                 open_set.sort(key=lambda x: x[0])
+    #     return None
+        
 

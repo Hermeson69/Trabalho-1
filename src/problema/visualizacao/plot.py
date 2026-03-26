@@ -65,6 +65,12 @@ def plotar_mapa(largura, altura, obstaculos, grafo=None, inicio=None, fim=None, 
     ax.plot(inicio[0], inicio[1], marker='o', color='green', markersize=12, label=f'Início ({inicio[0]:.1f}, {inicio[1]:.1f})')
     ax.plot(fim[0], fim[1], marker='x', color='red', markersize=12, label=f'Objetivo ({fim[0]:.1f}, {fim[1]:.1f})')
 
+    # Plotar caminho encontrado (se houver)
+    if caminho and len(caminho) >= 2:
+        xs = [p[0] for p in caminho]
+        ys = [p[1] for p in caminho]
+        ax.plot(xs, ys, color='orange', linewidth=2.5, label='Caminho')
+
 
     ax.set_xlabel("X")
     ax.set_ylabel("Y")

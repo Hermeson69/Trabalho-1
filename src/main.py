@@ -93,13 +93,20 @@ def main():
         
         planejador = PlanejadorCaminhos(goal_x, goal_y, obstaculos)
         grafo, inicio, fim = planejador.construir_grafo_visibilidade(incluir_inicial_final=True)
+        caminho = planejador.buscar_caminho_qualquer(grafo, inicio, fim)
+        # a_path = planejador.busca_a_estrela(grafo, inicio, fim)
         
         print(f" Grafo construído com {len(grafo)} vértices")
         print(f" Arestas de visibilidade: {sum(len(v) for v in grafo.values()) // 2}")
+        if caminho:
+            print(f" Caminho qualquer encontrado com {len(caminho)} vértices")
+        else:
+            print(" Nenhum caminho encontrado entre início e objetivo")
         
         print("\n Gerando visualização...")
-        plotar_mapa(goal_x, goal_y, obstaculos)
-        plotar_mapa(goal_x, goal_y, obstaculos, grafo=grafo, inicio=inicio, fim=fim)
+        plotar_mapa(goal_x, goal_y, obstaculos, grafo=grafo, inicio=inicio, fim=fim, caminho=caminho) 
+        # plotar_mapa(goal_x, goal_y, obstaculos, grafo=grafo, inicio=inicio, fim=fim, caminho=a_path)
+       
 
     except Exception as e:
         print(f" Erro ao gerar obstáculos: {e}")
